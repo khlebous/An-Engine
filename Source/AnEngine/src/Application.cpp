@@ -3,9 +3,9 @@
 #include "AnEngine/ImguiLayer.h"
 
 #include <Core/Core.h>
-#include <Graphics/Shader.h>
-
 #include <GLFW/glfw3.h>
+#include <Graphics/Shader.h>
+#include <Graphics/VertexBuffer.h>
 #include <glad/glad.h>
 
 using namespace an;
@@ -26,10 +26,9 @@ Application::Application()
 //--------------------------------------------------------------------------------------------------
 void Application::run()
 {
-    unsigned int vertexArray, vertexBuffer, indexBuffer;
+    unsigned int vertexArray, indexBuffer;
     std::unique_ptr<an::gfx::Shader> shader;
 
-    
     std::string vertexSource = R"(
         #version 330 core
             
@@ -58,13 +57,9 @@ void Application::run()
     glGenVertexArrays(1, &vertexArray);
     glBindVertexArray(vertexArray);
 
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-
     constexpr int vertexCount = 3;
     float vertices[3 * vertexCount] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    auto vertexBuffer = std::make_unique<gfx::VertexBuffer>(vertices, sizeof(vertices));
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, vertexCount, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);

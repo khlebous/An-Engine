@@ -23,6 +23,5 @@ target_compile_definitions(
     ${PROJECT_NAME} 
         PRIVATE GLFW_INCLUDE_NONE=1
         PRIVATE AN_ENABLE_ASSERTS=1
-        PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
         PRIVATE $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
