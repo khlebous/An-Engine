@@ -10,7 +10,7 @@ namespace an::gfx
 class VertexBuffer
 {
   public:
-    VertexBuffer(float *data, std::size_t size);
+    VertexBuffer(float *data, std::size_t count);
     ~VertexBuffer();
 
     void bind() const;

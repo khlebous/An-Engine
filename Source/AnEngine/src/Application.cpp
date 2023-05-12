@@ -4,6 +4,7 @@
 
 #include <Core/Core.h>
 #include <GLFW/glfw3.h>
+#include <Graphics/IndexBuffer.h>
 #include <Graphics/Shader.h>
 #include <Graphics/VertexBuffer.h>
 #include <glad/glad.h>
@@ -26,7 +27,7 @@ Application::Application()
 //--------------------------------------------------------------------------------------------------
 void Application::run()
 {
-    unsigned int vertexArray, indexBuffer;
+    unsigned int vertexArray;
     std::unique_ptr<an::gfx::Shader> shader;
 
     std::string vertexSource = R"(
@@ -59,16 +60,13 @@ void Application::run()
 
     constexpr int vertexCount = 3;
     float vertices[3 * vertexCount] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
-    auto vertexBuffer = std::make_unique<gfx::VertexBuffer>(vertices, sizeof(vertices));
+    auto vertexBuffer = std::make_unique<gfx::VertexBuffer>(vertices, 9);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, vertexCount, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
-    glGenBuffers(1, &indexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-
     unsigned int indices[vertexCount] = {0, 1, 2};
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    auto indexBuffer = std::make_unique<gfx::IndexBuffer>(indices, 3);
 
     while(m_isRunning)
     {
@@ -77,7 +75,7 @@ void Application::run()
 
         shader->bind();
         glBindVertexArray(vertexArray);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, indexBuffer->count(), GL_UNSIGNED_INT, nullptr);
 
         for(auto &layer : m_layerStack)
             layer->onUpdate();

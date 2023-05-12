@@ -31,7 +31,7 @@ void ImguiLayer::onUpdate()
     ImGui::NewFrame();
 
     static bool show = true;
-    ImGui::ShowDemoWindow(&show);
+    //ImGui::ShowDemoWindow(&show);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
