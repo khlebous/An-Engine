@@ -1,7 +1,9 @@
 #include "AnEngine/Application.h"
 
-#include "AnEngine/Core.h"
 #include "AnEngine/ImguiLayer.h"
+
+#include <Core/Core.h>
+#include <Graphics/Shader.h>
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -25,6 +27,33 @@ Application::Application()
 void Application::run()
 {
     unsigned int vertexArray, vertexBuffer, indexBuffer;
+    std::unique_ptr<an::gfx::Shader> shader;
+
+    
+    std::string vertexSource = R"(
+        #version 330 core
+            
+        layout(location = 0) in vec3 a_Position;
+        out vec3 v_Position;
+        void main()
+        {
+            v_Position = a_Position;
+            gl_Position = vec4(a_Position, 1.0);
+        }
+    )";
+
+    std::string fragmentSource = R"(
+        #version 330 core
+            
+        layout(location = 0) out vec4 color;
+        in vec3 v_Position;
+        void main()
+        {
+            color = vec4(v_Position * 0.5 + 0.5, 1.0);
+        }
+    )";
+
+    shader.reset(new gfx::Shader(vertexSource, fragmentSource));
 
     glGenVertexArrays(1, &vertexArray);
     glBindVertexArray(vertexArray);
@@ -51,6 +80,7 @@ void Application::run()
         glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        shader->bind();
         glBindVertexArray(vertexArray);
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
