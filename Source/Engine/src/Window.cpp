@@ -1,15 +1,21 @@
-#include "AnEngine/Window.h"
+#include "Engine/Window.h"
 
-#include "AnEngine/GraphicsContext.h"
+#include "Engine/GraphicsContext.h"
 
 #include <Core/Core.h>
 #include <Core/Logger.h>
+#include <GLFW/glfw3.h>
 
 using namespace an;
 
+struct Window::Impl
+{
+    GLFWwindow *m_glfwWindow;
+};
+
 //--------------------------------------------------------------------------------------------------
 Window::Window(const std::string &name, unsigned int width, unsigned int height)
-    : m_name {name}, m_width {width}, m_heigth {height}
+    : m_name {name}, m_width {width}, m_heigth {height}, pImpl {std::make_unique<Window::Impl>()}
 {
     init();
     AN_INFO("Window created. name [{0}] size ({1}, {2})", m_name, m_width, m_heigth);
@@ -18,7 +24,7 @@ Window::Window(const std::string &name, unsigned int width, unsigned int height)
 //--------------------------------------------------------------------------------------------------
 Window::~Window()
 {
-    glfwDestroyWindow(m_glfwWindow);
+    glfwDestroyWindow(pImpl->m_glfwWindow);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -42,7 +48,7 @@ bool Window::isVSync() const
 void Window::onUpdate()
 {
     glfwPollEvents();
-    glfwSwapBuffers(m_glfwWindow);
+    glfwSwapBuffers(pImpl->m_glfwWindow);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -57,8 +63,9 @@ void Window::init()
         sGlfwInitialized = true;
     }
 
-    m_glfwWindow = glfwCreateWindow((int)m_width, m_heigth, m_name.c_str(), nullptr, nullptr);
-    m_graphicsContext = std::make_unique<an::OpenGLContext>(m_glfwWindow);
+    pImpl->m_glfwWindow =
+        glfwCreateWindow((int)m_width, m_heigth, m_name.c_str(), nullptr, nullptr);
+    m_graphicsContext = std::make_unique<an::OpenGLContext>(pImpl->m_glfwWindow);
     m_graphicsContext->init();
 
     setVSync(true);

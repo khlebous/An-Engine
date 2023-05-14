@@ -1,5 +1,7 @@
 ﻿cmake_minimum_required (VERSION 3.15)
 
+project(Editor)
+
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_LIST_DIR} "*.h")
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_LIST_DIR} "*.cpp")
 
@@ -11,11 +13,8 @@ add_executable(${PROJECT_NAME}
 target_include_directories(
     ${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/include
-        ${CMAKE_SOURCE_DIR}/external/
-        ${CMAKE_SOURCE_DIR}/external/imgui/
-        ${CMAKE_SOURCE_DIR}/external/glfw/include
+        ${CMAKE_SOURCE_DIR}/Source/Engine/include
 )
-
 
 target_link_directories(
     ${PROJECT_NAME} PRIVATE 
@@ -25,16 +24,5 @@ target_link_directories(
 
 target_link_libraries(
     ${PROJECT_NAME} PUBLIC 
-        an::Core
-        an::Graphics
-        glfw
-        opengl32
-        imgui
-)
-
-target_compile_definitions(
-    ${PROJECT_NAME} 
-        PRIVATE GLFW_INCLUDE_NONE=1
-        PRIVATE AN_ENABLE_ASSERTS=1
-        PRIVATE $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+        an::Engine
 )

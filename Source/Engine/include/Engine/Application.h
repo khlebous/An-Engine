@@ -1,14 +1,16 @@
 #ifndef AN_ENGINE_APPLICATION
 #define AN_ENGINE_APPLICATION
 
-#include "AnEngine/LayerStack.h"
-#include "AnEngine/Window.h"
+#include "Engine/LayerStack.h"
+#include "Engine/Window.h"
 
 namespace an
 {
 
-class Application final
+class Application
 {
+    class Impl;
+
   public:
     static Application &get() { return *m_instance; }
 
@@ -27,7 +29,7 @@ class Application final
     static Application *m_instance;
 };
 
-Application *CreateApplication();
+std::unique_ptr<Application> createApplication();
 
 } // namespace an
 
