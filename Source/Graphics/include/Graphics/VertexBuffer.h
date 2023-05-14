@@ -1,6 +1,8 @@
 #ifndef AN_ENGINE_GRAPHICS_VERTEX_BUFFER
 #define AN_ENGINE_GRAPHICS_VERTEX_BUFFER
 
+#include "Graphics/BufferLayout.h"
+
 #include <cstddef>
 #include <cstdint>
 
@@ -10,14 +12,17 @@ namespace an::gfx
 class VertexBuffer
 {
   public:
-    VertexBuffer(float *data, std::size_t count);
+    VertexBuffer(float *data, std::size_t count, BufferLayout layout);
     ~VertexBuffer();
 
     void bind() const;
     void unbind() const;
 
+    const BufferLayout &layout() const { return m_layout; }
+
   private:
-    uint32_t m_rendererID;
+    unsigned int m_id;
+    BufferLayout m_layout;
 };
 
 } // namespace an::gfx

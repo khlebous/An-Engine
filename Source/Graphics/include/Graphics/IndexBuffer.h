@@ -19,7 +19,7 @@ class IndexBuffer
     std::size_t count() const { return m_count; }
 
   private:
-    uint32_t m_rendererID;
+    unsigned int m_id;
     std::size_t m_count;
 };
 
