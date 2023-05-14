@@ -4,6 +4,8 @@
 namespace an
 {
 
+class Event;
+
 class Layer
 {
     friend class LayerStack;
@@ -12,6 +14,7 @@ class Layer
     virtual ~Layer() {};
 
     virtual void onUpdate() {}
+    virtual void onEvent(Event &event) {}
 
   protected:
     virtual void onAttach() {}

@@ -13,6 +13,8 @@ class ImguiLayer final : public Layer
     void onDetach() final;
     void onUpdate() final;
 
+    void onEvent(Event &event) final;
+
   private:
     float time = 0.0f;
 };

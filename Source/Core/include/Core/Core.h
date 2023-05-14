@@ -16,4 +16,6 @@
     #define AN_ASSERT(x, ...)
 #endif
 
+#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+
 #endif // AN_ENGINE_CORE_CORE
