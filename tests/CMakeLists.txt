@@ -1,31 +1,16 @@
-set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
+cmake_minimum_required(VERSION 3.14)
+
+# GoogleTest requires at least C++14
+set(CMAKE_CXX_STANDARD 17)
+
 include(FetchContent)
-FetchContent_Declare(gtest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        release-1.11.0
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
-
-# -------------------------------------------------------------------------------------------------
-# Configure build of googletest
-# -------------------------------------------------------------------------------------------------
+# For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
-
-FetchContent_GetProperties(gtest)
-if(NOT gtest_POPULATED)
-  FetchContent_Populate(gtest)
-  add_subdirectory(${gtest_SOURCE_DIR} ${gtest_BINARY_DIR})
-  
-   set_target_properties(
-            gtest PROPERTIES
-                ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Deployment/${CMAKE_BUILD_TYPE}/AAA/arch"
-                LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Deployment/${CMAKE_BUILD_TYPE}/AAA/lib"
-                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Deployment/${CMAKE_BUILD_TYPE}/AAA/bin"
-            )
-
-endif()
-
-include(GoogleTest)
+FetchContent_MakeAvailable(googletest)
 
 # -------------------------------------------------------------------------------------------------
 # Add GTest
