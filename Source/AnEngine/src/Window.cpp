@@ -1,8 +1,8 @@
 #include "AnEngine/Window.h"
 
 #include "AnEngine/GraphicsContext.h"
-#include "AnEngine/Core.h"
 
+#include <Core/Core.h>
 #include <Core/Logger.h>
 
 using namespace an;

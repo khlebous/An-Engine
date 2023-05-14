@@ -1,6 +1,6 @@
 #include "AnEngine/LayerStack.h"
 
-#include "AnEngine/Core.h"
+#include <Core/Core.h>
 
 using namespace an;
 

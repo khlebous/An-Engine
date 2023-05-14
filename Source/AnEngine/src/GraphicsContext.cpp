@@ -1,6 +1,6 @@
 #include "AnEngine/GraphicsContext.h"
 
-#include "AnEngine/Core.h"
+#include <Core/Core.h>
 
 #include <glad/glad.h>
 

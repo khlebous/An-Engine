@@ -1,10 +1,15 @@
 #include "AnEngine/Application.h"
 
-#include "AnEngine/Core.h"
 #include "AnEngine/ImguiLayer.h"
 
+#include <Core/Core.h>
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
+#include <Graphics/Renderer.h>
+#include <Graphics/BufferLayout.h>
+#include <Graphics/IndexBuffer.h>
+#include <Graphics/Shader.h>
+#include <Graphics/VertexArray.h>
+#include <Graphics/VertexBuffer.h>
 
 using namespace an;
 
@@ -24,35 +29,69 @@ Application::Application()
 //--------------------------------------------------------------------------------------------------
 void Application::run()
 {
-    unsigned int vertexArray, vertexBuffer, indexBuffer;
+    std::unique_ptr<an::gfx::Shader> shader;
 
-    glGenVertexArrays(1, &vertexArray);
-    glBindVertexArray(vertexArray);
+    std::string vertexSource = R"(
+        #version 330 core
+            
+        layout(location = 0) in vec3 a_Position;
+        layout(location = 1) in vec4 a_Color;
 
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+        out vec4 v_Color;
 
-    constexpr int vertexCount = 3;
-    float vertices[3 * vertexCount] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
+        void main()
+        {
+            v_Color = a_Color;
+            gl_Position = vec4(a_Position, 1.0);
+        }
+    )";
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    std::string fragmentSource = R"(
+        #version 330 core
+            
+        layout(location = 0) out vec4 color;
+        
+        in vec4 v_Color;
+        
+        void main()
+        {
+            color = v_Color;
+        }
+    )";
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, vertexCount, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    shader.reset(new gfx::Shader(vertexSource, fragmentSource));
 
-    glGenBuffers(1, &indexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+    auto vertArray = std::make_unique<gfx::VertexArray>();
 
+    std::vector<gfx::BufferElement> elements;
+    elements.reserve(2U);
+    elements.emplace_back("a_Position", gfx::ShaderDataType::FLOAT3);
+    elements.emplace_back("a_Color", gfx::ShaderDataType::FLOAT4);
+    gfx::BufferLayout bufferLayout(std::move(elements));
+
+    constexpr int vertexCount = 7;
+    float vertices[3 * vertexCount] = {-0.5f, -0.5f, 0.0f, 0.0, 1.0, 1.0, 1.0,
+                                       0.5f,  -0.5f, 0.0f, 1.0, 0.0, 1.0, 1.0,
+                                       0.0f,  0.5f,  0.0f, 1.0, 1.0, 0.0, 1.0};
+    auto vertexBuffer =
+        std::make_unique<gfx::VertexBuffer>(vertices, 3 * vertexCount, std::move(bufferLayout));
+
+    std::vector<std::unique_ptr<gfx::VertexBuffer>> vertBuffers;
+    vertBuffers.push_back(std::move(vertexBuffer));
+
+    vertArray->bind();
     unsigned int indices[vertexCount] = {0, 1, 2};
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    auto indexBuffer = std::make_unique<gfx::IndexBuffer>(indices, 3);
+
+    vertArray->setVertexBuffers(std::move(vertBuffers));
+    vertArray->setIndexBuffer(std::move(indexBuffer));
+
+    gfx::Renderer::setClearColor(0.6f, 0.6f, 0.6f, 1.0f);
 
     while(m_isRunning)
     {
-        glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glBindVertexArray(vertexArray);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+        gfx::Renderer::clear();
+        gfx::Renderer::submit(vertArray, shader);
 
         for(auto &layer : m_layerStack)
             layer->onUpdate();
