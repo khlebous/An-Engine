@@ -1,10 +1,12 @@
 #ifndef AN_ENGINE_LAYER
 #define AN_ENGINE_LAYER
 
+#include "AnEngine/Export.h"
+
 namespace an
 {
 
-class Layer
+class AN_API Layer
 {
     friend class LayerStack;
 

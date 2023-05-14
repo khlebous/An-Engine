@@ -1,6 +1,7 @@
 #ifndef AN_ENGINE_LAYER_STACK
 #define AN_ENGINE_LAYER_STACK
 
+#include "AnEngine/Export.h"
 #include "AnEngine/Layer.h"
 
 #include <memory>
@@ -9,10 +10,16 @@
 namespace an
 {
 
+class A
+{
+  public:
+    AN_API A();
+};
+
 class LayerStack
 {
   public:
-    LayerStack();
+    AN_API LayerStack();
 
     void pushLayer(std::unique_ptr<Layer> layer);
     void pushOverlay(std::unique_ptr<Layer> overlay);

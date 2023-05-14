@@ -52,3 +52,5 @@ void LayerStack::popOverlay(Layer *overlay)
     overlay->onDetach();
     m_layers.erase(it);
 }
+
+A::A() {}

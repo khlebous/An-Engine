@@ -2,11 +2,12 @@
 #define AN_ENGINE_IMGUI_LAYER
 
 #include "AnEngine/Layer.h"
+#include "AnEngine/Export.h"
 
 namespace an
 {
 
-class ImguiLayer final : public Layer
+class AN_API ImguiLayer final : public Layer
 {
   public:
     void onAttach() final;
