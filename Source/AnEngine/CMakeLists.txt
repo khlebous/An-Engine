@@ -13,14 +13,12 @@ target_include_directories(
         ${CMAKE_CURRENT_LIST_DIR}/include
         ${CMAKE_SOURCE_DIR}/external/
         ${CMAKE_SOURCE_DIR}/external/imgui/
-        ${CMAKE_SOURCE_DIR}/external/glad/include
         ${CMAKE_SOURCE_DIR}/external/glfw/include
 )
 
 
 target_link_directories(
     ${PROJECT_NAME} PRIVATE 
-        external/glad/src
         external/glfw/src
         external/imgui/
 )
@@ -29,7 +27,6 @@ target_link_libraries(
     ${PROJECT_NAME} PUBLIC 
         an::Core
         an::Graphics
-        glad
         glfw
         opengl32
         imgui

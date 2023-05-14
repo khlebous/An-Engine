@@ -4,12 +4,12 @@
 
 #include <Core/Core.h>
 #include <GLFW/glfw3.h>
+#include <Graphics/Renderer.h>
 #include <Graphics/BufferLayout.h>
 #include <Graphics/IndexBuffer.h>
 #include <Graphics/Shader.h>
 #include <Graphics/VertexArray.h>
 #include <Graphics/VertexBuffer.h>
-#include <glad/glad.h>
 
 using namespace an;
 
@@ -86,14 +86,12 @@ void Application::run()
     vertArray->setVertexBuffers(std::move(vertBuffers));
     vertArray->setIndexBuffer(std::move(indexBuffer));
 
+    gfx::Renderer::setClearColor(0.6f, 0.6f, 0.6f, 1.0f);
+
     while(m_isRunning)
     {
-        glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        shader->bind();
-        vertArray->bind();
-        glDrawElements(GL_TRIANGLES, vertArray->indexBuffer()->count(), GL_UNSIGNED_INT, nullptr);
+        gfx::Renderer::clear();
+        gfx::Renderer::submit(vertArray, shader);
 
         for(auto &layer : m_layerStack)
             layer->onUpdate();
