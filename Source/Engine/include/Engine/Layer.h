@@ -15,6 +15,7 @@ class Layer
 
     virtual void onUpdate() {}
     virtual void onEvent(Event &event) {}
+    virtual void onImgui() {}
 
   protected:
     virtual void onAttach() {}

@@ -11,9 +11,11 @@ class ImguiLayer final : public Layer
   public:
     void onAttach() final;
     void onDetach() final;
-    void onUpdate() final;
-
+    void onImgui() final;
     void onEvent(Event &event) final;
+
+    void begin();
+    void end();
 
   private:
     float time = 0.0f;

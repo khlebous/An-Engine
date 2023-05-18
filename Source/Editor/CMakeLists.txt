@@ -7,13 +7,13 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_LIST_DIR} "*.cpp")
 
 add_executable(${PROJECT_NAME}
     ${HEADERS}
-    ${SOURCES}
-)
+    ${SOURCES})
 
 target_include_directories(
     ${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/include
         ${CMAKE_SOURCE_DIR}/Source/Engine/include
+        ${CMAKE_SOURCE_DIR}/external/imgui/
 )
 
 target_link_directories(

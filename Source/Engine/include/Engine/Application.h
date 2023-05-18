@@ -8,6 +8,7 @@ namespace an
 {
 
 class Event;
+class ImguiLayer;
 class WindowCloseEvent;
 class WindowResizeEvent;
 
@@ -26,6 +27,9 @@ class Application
     void run();
     void onEvent(Event &event);
 
+  protected:
+    LayerStack m_layerStack;
+
   private:
     bool onWindowClose(WindowCloseEvent &event);
     bool onWindowResize(WindowResizeEvent &event);
@@ -33,7 +37,7 @@ class Application
     std::unique_ptr<Window> m_window;
     bool m_isMinimized = false;
     bool m_isRunning = true;
-    LayerStack m_layerStack;
+    ImguiLayer *m_imguiOverlay;
 
     static Application *m_instance;
 };
