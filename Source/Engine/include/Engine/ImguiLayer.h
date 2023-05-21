@@ -1,7 +1,7 @@
 #ifndef AN_ENGINE_IMGUI_LAYER
 #define AN_ENGINE_IMGUI_LAYER
 
-#include "AnEngine/Layer.h"
+#include "Engine/Layer.h"
 
 namespace an
 {
@@ -11,7 +11,11 @@ class ImguiLayer final : public Layer
   public:
     void onAttach() final;
     void onDetach() final;
-    void onUpdate() final;
+    void onImgui() final;
+    void onEvent(Event &event) final;
+
+    void begin();
+    void end();
 
   private:
     float time = 0.0f;

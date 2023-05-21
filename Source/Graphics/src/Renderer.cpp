@@ -24,3 +24,8 @@ void Renderer::submit(
     vertArray->bind();
     glDrawElements(GL_TRIANGLES, vertArray->indexBuffer()->count(), GL_UNSIGNED_INT, nullptr);
 }
+
+void Renderer::onWindowResize(unsigned int width, unsigned int height)
+{
+    glViewport(0, 0, width, height);
+}

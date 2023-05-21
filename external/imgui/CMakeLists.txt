@@ -9,6 +9,8 @@ add_library(
     ${PROJECT_NAME}
         imgui/backends/imgui_impl_opengl3.cpp
         imgui/backends/imgui_impl_opengl3.h
+        imgui/backends/imgui_impl_glfw.cpp
+        imgui/backends/imgui_impl_glfw.h
         imgui/imconfig.h
         imgui/imgui.cpp
         imgui/imgui.h
@@ -22,4 +24,6 @@ add_library(
 target_include_directories(
     ${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/imgui
+    ${PROJECT_NAME} PRIVATE
+        ${CMAKE_SOURCE_DIR}/external/glfw/include
 )

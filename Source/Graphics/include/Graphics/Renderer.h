@@ -14,6 +14,8 @@ class Renderer
     static void clear();
     static void submit(
         const std::unique_ptr<VertexArray> &vertArray, const std::unique_ptr<Shader> &shader);
+
+    static void onWindowResize(unsigned int width, unsigned int height);
 };
 
 } // namespace an::gfx
