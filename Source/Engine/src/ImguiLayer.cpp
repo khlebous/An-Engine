@@ -19,6 +19,8 @@ void ImguiLayer::onAttach()
     ImGuiIO &io = ImGui::GetIO();
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     auto &app = Application::get();
     GLFWwindow *window = static_cast<GLFWwindow *>(app.getWindow().getNativeWindow());
@@ -51,7 +53,7 @@ void ImguiLayer::onEvent(Event &event)
 }
 
 //--------------------------------------------------------------------------------------------------
-void ImguiLayer::begin() 
+void ImguiLayer::begin()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -59,19 +61,22 @@ void ImguiLayer::begin()
 }
 
 //--------------------------------------------------------------------------------------------------
-void ImguiLayer::end() 
+void ImguiLayer::end()
 {
     ImGuiIO &io = ImGui::GetIO();
     Application &app = Application::get();
     io.DisplaySize = ImVec2(app.getWindow().getWidth(), app.getWindow().getHeight());
 
-    float currTime = (float)glfwGetTime();
-    io.DeltaTime = time > 0.0f ? (currTime - time) : (1.0f / 60.0f);
-    time = currTime;
-
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
 
+    if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        GLFWwindow *backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
+}
 
 } // namespace an

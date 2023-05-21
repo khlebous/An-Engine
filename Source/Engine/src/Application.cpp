@@ -54,6 +54,11 @@ void Application::run()
     }
 }
 
+void Application::close()
+{
+    m_isRunning = false;
+}
+
 void Application::onEvent(Event &event)
 {
     EventDispatcher dispatcher(event);

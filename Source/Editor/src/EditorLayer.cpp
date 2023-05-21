@@ -82,14 +82,29 @@ void EditorLayer::onUpdate()
 //--------------------------------------------------------------------------------------------------
 void EditorLayer::onImgui()
 {
-    ImGui::Begin("Viewport");
+    ImGui::DockSpaceOverViewport();
 
-    uint32_t textureId = m_framebuffer->colorAttachmentRendererID();
-    ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-    ImGui::Image(
-        (void *)textureId,
-        ImVec2 {viewportPanelSize.x, viewportPanelSize.y},
-        ImVec2 {0, 1},
-        ImVec2 {1, 0});
+    ImGui::Begin("Viewport");
+    {
+        uint32_t textureId = m_framebuffer->colorAttachmentRendererID();
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+        ImGui::Image(
+            (void *)textureId,
+            ImVec2 {viewportPanelSize.x, viewportPanelSize.y},
+            ImVec2 {0, 1},
+            ImVec2 {1, 0});
+    }
+    ImGui::End();
+
+    ImGui::Begin("Viewport2");
+    {
+        uint32_t textureId = m_framebuffer->colorAttachmentRendererID();
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+        ImGui::Image(
+            (void *)textureId,
+            ImVec2 {viewportPanelSize.x, viewportPanelSize.y},
+            ImVec2 {0, 1},
+            ImVec2 {1, 0});
+    }
     ImGui::End();
 }

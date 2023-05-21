@@ -25,6 +25,7 @@ class Application
     Window &getWindow() { return *m_window; }
 
     void run();
+    void close();
     void onEvent(Event &event);
 
   protected:
