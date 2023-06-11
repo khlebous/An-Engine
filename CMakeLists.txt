@@ -14,3 +14,5 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory (external/glad)
 add_subdirectory (external/imgui)
+add_subdirectory (external/stb)
+add_subdirectory (external/tinyobjloader)
