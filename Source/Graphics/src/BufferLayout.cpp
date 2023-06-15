@@ -98,3 +98,14 @@ BufferLayout::BufferLayout(std::vector<BufferElement> elements)
         offset += currElSize;
     }
 }
+
+std::size_t BufferLayout::componentCount() const
+{
+    std::size_t componentCount{};
+    for(const auto &bufElemnt : elements())
+    {
+        componentCount += bufElemnt.componentCount();
+    }
+
+    return componentCount;
+}

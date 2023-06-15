@@ -25,3 +25,8 @@ target_compile_definitions(
         PRIVATE AN_ENABLE_ASSERTS=1
         PRIVATE $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
+
+configure_file(
+    "${CMAKE_SOURCE_DIR}/config/config.txt"
+    "${CMAKE_BINARY_DIR}/config/config.h"
+)

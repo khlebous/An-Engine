@@ -3,6 +3,8 @@
 #include <Graphics/Renderer.h>
 #include <imgui/imgui.h>
 
+#include <config.h>
+
 using namespace an::ed;
 
 //--------------------------------------------------------------------------------------------------
@@ -12,13 +14,13 @@ EditorLayer::EditorLayer() : m_vertArray {std::make_unique<gfx::VertexArray>()}
         #version 330 core
             
         layout(location = 0) in vec3 a_Position;
-        layout(location = 1) in vec4 a_Color;
+        layout(location = 1) in vec3 a_Normal;
 
         out vec4 v_Color;
 
         void main()
         {
-            v_Color = a_Color;
+            v_Color = vec4(a_Normal, 1.0);
             gl_Position = vec4(a_Position, 1.0);
         }
     )";
@@ -36,18 +38,18 @@ EditorLayer::EditorLayer() : m_vertArray {std::make_unique<gfx::VertexArray>()}
         }
     )";
 
-    m_shader = std::make_unique<gfx::Shader>(vertexSource, fragmentSource);
+    m_shader = std::make_shared<gfx::Shader>(vertexSource, fragmentSource);
 
     std::vector<gfx::BufferElement> elements;
     elements.reserve(2U);
     elements.emplace_back("a_Position", gfx::ShaderDataType::FLOAT3);
-    elements.emplace_back("a_Color", gfx::ShaderDataType::FLOAT4);
+    elements.emplace_back("a_Normal", gfx::ShaderDataType::FLOAT3);
     gfx::BufferLayout bufferLayout(std::move(elements));
 
-    constexpr int vertexCount = 7;
-    float vertices[3 * vertexCount] = {-0.5f, -0.5f, 0.0f, 0.0, 1.0, 1.0, 1.0,
-                                       0.5f,  -0.5f, 0.0f, 1.0, 0.0, 1.0, 1.0,
-                                       0.0f,  0.5f,  0.0f, 1.0, 1.0, 0.0, 1.0};
+    constexpr int vertexCount = 6;
+    float vertices[3 * vertexCount] = {-0.5f, -0.5f, 0.0f, 1.0, 0.0, 0.0,
+                                       0.5f,  -0.5f, 0.0f, 0.0, 1.0, 0.0,
+                                       0.0f,  0.5f,  0.0f, 0.0, 0.0, 1.0};
     auto vertexBuffer =
         std::make_unique<gfx::VertexBuffer>(vertices, 3 * vertexCount, std::move(bufferLayout));
 
@@ -66,6 +68,9 @@ EditorLayer::EditorLayer() : m_vertArray {std::make_unique<gfx::VertexArray>()}
     fbSpecification.m_width = 1280;
     fbSpecification.m_height = 720;
     m_framebuffer = std::make_unique<gfx::Framebuffer>(fbSpecification);
+
+    m_model = std::make_unique<gfx::Model>(an::config::resourcesPath + "suzanne.obj");
+    m_model->setShader(m_shader);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -76,6 +81,7 @@ void EditorLayer::onUpdate()
     m_framebuffer->bind();
     gfx::Renderer::clear();
     gfx::Renderer::submit(m_vertArray, m_shader);
+    gfx::Renderer::submit(m_model);
     m_framebuffer->unbind();
 }
 

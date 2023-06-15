@@ -2,7 +2,6 @@
 #define AN_ENGINE_GRAPHICS_BUFFER_LAYOUT
 
 #include <Core/Core.h>
-
 #include <string>
 
 namespace an::gfx
@@ -55,6 +54,8 @@ class BufferLayout
 
     [[no_discard]] std::size_t stride() const { return m_stride; }
     [[no_discard]] const std::vector<BufferElement> &elements() const { return m_elements; }
+    
+    [[no_discard]] std::size_t componentCount() const;
 
   private:
     std::vector<BufferElement> m_elements;

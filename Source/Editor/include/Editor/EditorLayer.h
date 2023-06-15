@@ -4,6 +4,7 @@
 #include <Graphics/Shader.h>
 #include <Graphics/VertexArray.h>
 #include <Graphics/Framebuffer.h>
+#include <Graphics/Model.h>
 
 #include <memory>
 
@@ -20,8 +21,9 @@ class EditorLayer : public Layer
 
   private:
     std::unique_ptr<gfx::VertexArray> m_vertArray;
-    std::unique_ptr<gfx::Shader> m_shader;
+    std::shared_ptr<gfx::Shader> m_shader;
     std::unique_ptr<gfx::Framebuffer> m_framebuffer;
+    std::unique_ptr<gfx::Model> m_model;
 };
 
 } // namespace an

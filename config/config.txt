@@ -1,0 +1,11 @@
+#ifndef AN_CONFIG_H
+#define AN_CONFIG_H
+
+#include <string>
+
+namespace an::config
+{
+    auto const resourcesPath = std::string("${CMAKE_BINARY_DIR}/resources/");
+}
+
+#endif // AN_CONFIG_H
