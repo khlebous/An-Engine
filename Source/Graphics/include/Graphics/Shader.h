@@ -9,11 +9,14 @@ namespace an::gfx
 class Shader
 {
   public:
-    Shader(const std::string &vertexSource, const std::string &fragmentSource);
+    Shader(const std::string &vertexFilePath, const std::string &fragmentSourceFilePath);
     ~Shader();
 
     void bind() const;
     void unbind() const;
+
+  private:
+    void init(const std::string &vertexSource, const std::string &fragmentSource);
 
   private:
     uint32_t m_rendererID;

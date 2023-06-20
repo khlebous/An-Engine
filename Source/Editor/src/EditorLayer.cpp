@@ -10,35 +10,9 @@ using namespace an::ed;
 //--------------------------------------------------------------------------------------------------
 EditorLayer::EditorLayer() : m_vertArray {std::make_unique<gfx::VertexArray>()}
 {
-    std::string vertexSource = R"(
-        #version 330 core
-            
-        layout(location = 0) in vec3 a_Position;
-        layout(location = 1) in vec3 a_Normal;
-
-        out vec4 v_Color;
-
-        void main()
-        {
-            v_Color = vec4(a_Normal, 1.0);
-            gl_Position = vec4(a_Position, 1.0);
-        }
-    )";
-
-    std::string fragmentSource = R"(
-        #version 330 core
-            
-        layout(location = 0) out vec4 color;
-        
-        in vec4 v_Color;
-        
-        void main()
-        {
-            color = v_Color;
-        }
-    )";
-
-    m_shader = std::make_shared<gfx::Shader>(vertexSource, fragmentSource);
+    std::string vertexFilePath = an::config::resourcesPath + "shader.vs";
+    std::string fragmentFilePath = an::config::resourcesPath + "shader.fs";
+    m_shader = std::make_shared<gfx::Shader>(vertexFilePath, fragmentFilePath);
 
     std::vector<gfx::BufferElement> elements;
     elements.reserve(2U);

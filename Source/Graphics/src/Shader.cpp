@@ -2,15 +2,73 @@
 
 #include <Core/Core.h>
 #include <Core/Logger.h>
-
 #include <glad/glad.h>
-
 #include <vector>
+#include <fstream>
 
 using namespace an::gfx;
 
+namespace
+{
+
+std::string readFile(const std::string &filepath)
+{
+    std::string result;
+    std::ifstream in(filepath, std::ios::in | std::ios::binary);
+    if(in)
+    {
+        in.seekg(0, std::ios::end);
+        size_t size = in.tellg();
+        if(size != -1)
+        {
+            result.resize(size);
+            in.seekg(0, std::ios::beg);
+            in.read(&result[0], size);
+            in.close();
+        }
+        else
+        {
+            AN_ERROR("Cannot read {0}.", filepath);
+        }
+    }
+    else
+    {
+        AN_ERROR("COuld not open file: {0}", filepath);
+    }
+
+    return result;
+}
+
+} // namespace
+
 //--------------------------------------------------------------------------------------------------
-Shader::Shader(const std::string &vertexSource, const std::string &fragmentSource)
+Shader::Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath)
+{
+    const auto vertexSource = readFile(vertexFilePath);
+    const auto fragmentSource = readFile(fragmentFilePath);
+
+    init(vertexSource, fragmentSource);
+}
+
+//--------------------------------------------------------------------------------------------------
+Shader::~Shader()
+{
+    glDeleteProgram(m_rendererID);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::bind() const
+{
+    glUseProgram(m_rendererID);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::unbind() const
+{
+    glUseProgram(0);
+}
+
+void Shader::init(const std::string &vertexSource, const std::string &fragmentSource)
 {
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
@@ -86,22 +144,4 @@ Shader::Shader(const std::string &vertexSource, const std::string &fragmentSourc
 
     glDetachShader(program, vertexShader);
     glDetachShader(program, fragmentShader);
-}
-
-//--------------------------------------------------------------------------------------------------
-Shader::~Shader()
-{
-    glDeleteProgram(m_rendererID);
-}
-
-//--------------------------------------------------------------------------------------------------
-void Shader::bind() const
-{
-    glUseProgram(m_rendererID);
-}
-
-//--------------------------------------------------------------------------------------------------
-void Shader::unbind() const
-{
-    glUseProgram(0);
 }
