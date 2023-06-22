@@ -3,6 +3,8 @@
 
 #include "Core/Event.h"
 
+#include <sstream>
+
 namespace an
 {
 
@@ -61,6 +63,7 @@ class MouseButtonEvent : public Event
 
     inline int getMouseButton() const { return m_button; }
 
+    EVENT_CLASS_TYPE(MouseButtonPressed)
     EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
   protected:
@@ -81,6 +84,7 @@ class MouseButtonPressedEvent final : public MouseButtonEvent
     }
 
     EVENT_CLASS_TYPE(MouseButtonPressed)
+    EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 };
 
 class MouseButtonReleasedEvent final : public MouseButtonEvent
@@ -97,6 +101,7 @@ class MouseButtonReleasedEvent final : public MouseButtonEvent
     }
 
     EVENT_CLASS_TYPE(MouseButtonReleased)
+    EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 };
 
 } // namespace an

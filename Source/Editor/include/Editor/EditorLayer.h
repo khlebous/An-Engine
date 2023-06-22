@@ -1,11 +1,13 @@
 #pragma once
 
+#include <Core/MouseEvent.h>
+#include <Core/WindowEvent.h>
 #include <Engine/Layer.h>
-#include <Graphics/Shader.h>
-#include <Graphics/VertexArray.h>
+#include <Graphics/Camera.h>
 #include <Graphics/Framebuffer.h>
 #include <Graphics/Model.h>
-
+#include <Graphics/Shader.h>
+#include <Graphics/VertexArray.h>
 #include <memory>
 
 namespace an::ed
@@ -19,11 +21,21 @@ class EditorLayer : public Layer
     void onUpdate() final;
     void onImgui() final;
 
+    void onEvent(Event &event) override;
+
   private:
-    std::unique_ptr<gfx::VertexArray> m_vertArray;
+    bool onMouseScrollEvent(MouseScrollEvent &mouseScrollEvent);
+    bool onMouseMovedEvent(MouseMovedEvent &mouseMovedEvent);
+    bool onWindowResizeEvent(WindowResizeEvent &windowResizeEvent);
+
+  private:
     std::shared_ptr<gfx::Shader> m_shader;
     std::unique_ptr<gfx::Framebuffer> m_framebuffer;
     std::unique_ptr<gfx::Model> m_model;
+    
+    gfx::Camera m_camera;
+
+    glm::vec2 prevFrameMousePos {-1, -1};
 };
 
-} // namespace an
+} // namespace an::ed

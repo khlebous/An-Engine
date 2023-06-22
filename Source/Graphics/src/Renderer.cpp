@@ -1,10 +1,13 @@
 #include "Graphics/Renderer.h"
 
+#include "Graphics/Camera.h"
 #include "Graphics/Model.h"
 
 #include <glad/glad.h>
 
 using namespace an::gfx;
+
+Renderer::SceneData Renderer::sSceneData = Renderer::SceneData {};
 
 //--------------------------------------------------------------------------------------------------
 void Renderer::setClearColor(float r, float g, float b, float a)
@@ -15,25 +18,43 @@ void Renderer::setClearColor(float r, float g, float b, float a)
 //--------------------------------------------------------------------------------------------------
 void Renderer::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 //--------------------------------------------------------------------------------------------------
-void Renderer::submit(
-    const std::unique_ptr<VertexArray> &vertArray, const std::shared_ptr<Shader> &shader)
+void Renderer::enableDepthTest()
 {
-    shader->bind();
-    vertArray->bind();
-    glDrawElements(GL_TRIANGLES, vertArray->indexBuffer()->count(), GL_UNSIGNED_INT, nullptr);
+    glEnable(GL_DEPTH_TEST);
 }
 
+//--------------------------------------------------------------------------------------------------
+void Renderer::disableDepthTest()
+{
+    glDisable(GL_DEPTH_TEST);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Renderer::begin(const Camera &camera)
+{
+    sSceneData.projectionMatrix =
+        glm::perspective(glm::radians(camera.getZoom()), camera.aspect(), camera.getNear(), camera.getFar());
+
+    sSceneData.viewMatrix = camera.viewMatrix();
+}
+
+//--------------------------------------------------------------------------------------------------
 void Renderer::submit(const std::unique_ptr<Model> &model)
 {
-    model->shader()->bind();
+    const auto &shader = model->shader();
+    shader->bind();
+    shader->uploadUniformMat4("u_view", sSceneData.viewMatrix);
+    shader->uploadUniformMat4("u_projection", sSceneData.projectionMatrix);
+
     for(const auto &mesh : model->meshes())
         Renderer::submit(mesh);
 }
 
+//--------------------------------------------------------------------------------------------------
 void Renderer::submit(const Mesh &mesh)
 {
     const auto &vertArray = mesh.vertArray();
@@ -41,6 +62,7 @@ void Renderer::submit(const Mesh &mesh)
     glDrawElements(GL_TRIANGLES, vertArray->indexBuffer()->count(), GL_UNSIGNED_INT, nullptr);
 }
 
+//--------------------------------------------------------------------------------------------------
 void Renderer::onWindowResize(unsigned int width, unsigned int height)
 {
     glViewport(0, 0, width, height);

@@ -27,7 +27,7 @@ bool Input::isKeyPressed(int keycode)
 //--------------------------------------------------------------------------------------------------
 bool Input::isMouseButtonPressed(int button)
 {
-    auto state = glfwGetKey(getWindow(), button);
+    auto state = glfwGetMouseButton(getWindow(), button);
 
     return state == GLFW_PRESS;
 }

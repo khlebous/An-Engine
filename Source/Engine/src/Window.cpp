@@ -166,6 +166,16 @@ void Window::init()
             }
         });
 
+    glfwSetScrollCallback(
+        m_pImpl->m_glfwWindow,
+        [](GLFWwindow *window, double xOffset, double yOffset)
+        {
+            WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+
+            MouseScrollEvent event((float)xOffset, (float)yOffset);
+            data.m_eventCallback(event);
+        });
+
     glfwSetCursorPosCallback(
         m_pImpl->m_glfwWindow,
         [](GLFWwindow *window, double xPos, double yPos)

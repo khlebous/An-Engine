@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include <fstream>
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace an::gfx;
 
@@ -144,4 +145,10 @@ void Shader::init(const std::string &vertexSource, const std::string &fragmentSo
 
     glDetachShader(program, vertexShader);
     glDetachShader(program, fragmentShader);
+}
+
+void Shader::uploadUniformMat4(const std::string &name, const glm::mat4 &matrix)
+{
+    GLint location = glGetUniformLocation(m_rendererID, name.c_str());
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }

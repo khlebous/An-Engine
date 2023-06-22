@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <glm/fwd.hpp>
+
 namespace an::gfx
 {
 
@@ -14,6 +16,8 @@ class Shader
 
     void bind() const;
     void unbind() const;
+
+    void uploadUniformMat4(const std::string &name, const glm::mat4 &matrix);
 
   private:
     void init(const std::string &vertexSource, const std::string &fragmentSource);

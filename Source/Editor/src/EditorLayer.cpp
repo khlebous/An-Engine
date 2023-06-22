@@ -1,42 +1,26 @@
 #include "Editor/EditorLayer.h"
 
+#include <Core/Core.h>
+#include <Core/Event.h>
+#include <Core/KeyCodes.h>
+#include <Core/MouseButtonCodes.h>
+#include <Core/MouseEvent.h>
+#include <Engine/Input.h>
 #include <Graphics/Renderer.h>
-#include <imgui/imgui.h>
-
 #include <config.h>
+#include <imgui/imgui.h>
 
 using namespace an::ed;
 
 //--------------------------------------------------------------------------------------------------
-EditorLayer::EditorLayer() : m_vertArray {std::make_unique<gfx::VertexArray>()}
+EditorLayer::EditorLayer() : m_camera({0.5f, 0.0f, 5.0f})
 {
     std::string vertexFilePath = an::config::resourcesPath + "shader.vs";
     std::string fragmentFilePath = an::config::resourcesPath + "shader.fs";
     m_shader = std::make_shared<gfx::Shader>(vertexFilePath, fragmentFilePath);
 
-    std::vector<gfx::BufferElement> elements;
-    elements.reserve(2U);
-    elements.emplace_back("a_Position", gfx::ShaderDataType::FLOAT3);
-    elements.emplace_back("a_Normal", gfx::ShaderDataType::FLOAT3);
-    gfx::BufferLayout bufferLayout(std::move(elements));
-
-    constexpr int vertexCount = 6;
-    float vertices[3 * vertexCount] = {-0.5f, -0.5f, 0.0f, 1.0, 0.0, 0.0,
-                                       0.5f,  -0.5f, 0.0f, 0.0, 1.0, 0.0,
-                                       0.0f,  0.5f,  0.0f, 0.0, 0.0, 1.0};
-    auto vertexBuffer =
-        std::make_unique<gfx::VertexBuffer>(vertices, 3 * vertexCount, std::move(bufferLayout));
-
-    std::vector<std::unique_ptr<gfx::VertexBuffer>> vertBuffers;
-    vertBuffers.push_back(std::move(vertexBuffer));
-
-    m_vertArray->bind();
-    unsigned int indices[vertexCount] = {0, 1, 2};
-    auto indexBuffer = std::make_unique<gfx::IndexBuffer>(indices, 3);
-
-    m_vertArray->setVertexBuffers(std::move(vertBuffers));
-    m_vertArray->setIndexBuffer(std::move(indexBuffer));
     gfx::Renderer::setClearColor(0.6f, 0.6f, 0.6f, 1.0f);
+    gfx::Renderer::enableDepthTest();
 
     gfx::FramebufferSpecification fbSpecification;
     fbSpecification.m_width = 1280;
@@ -50,11 +34,23 @@ EditorLayer::EditorLayer() : m_vertArray {std::make_unique<gfx::VertexArray>()}
 //--------------------------------------------------------------------------------------------------
 void EditorLayer::onUpdate()
 {
+    // @todo change to delta time
+    float cameraMoveSpeed = 0.05f;
+
+    if(an::Input::isKeyPressed(AN_KEY_LEFT) || an::Input::isKeyPressed(AN_KEY_A))
+        m_camera.processKeyboard(an::gfx::Camera::Direction::LEFT, cameraMoveSpeed);
+    else if(an::Input::isKeyPressed(AN_KEY_RIGHT) || an::Input::isKeyPressed(AN_KEY_D))
+        m_camera.processKeyboard(an::gfx::Camera::Direction::RIGHT, cameraMoveSpeed);
+    else if(an::Input::isKeyPressed(AN_KEY_DOWN) || an::Input::isKeyPressed(AN_KEY_S))
+        m_camera.processKeyboard(an::gfx::Camera::Direction::BACKWARD, cameraMoveSpeed);
+    else if(an::Input::isKeyPressed(AN_KEY_UP) || an::Input::isKeyPressed(AN_KEY_W))
+        m_camera.processKeyboard(an::gfx::Camera::Direction::FORWARD, cameraMoveSpeed);
+
     gfx::Renderer::clear();
 
     m_framebuffer->bind();
     gfx::Renderer::clear();
-    gfx::Renderer::submit(m_vertArray, m_shader);
+    gfx::Renderer::begin(m_camera);
     gfx::Renderer::submit(m_model);
     m_framebuffer->unbind();
 }
@@ -73,18 +69,50 @@ void EditorLayer::onImgui()
             ImVec2 {viewportPanelSize.x, viewportPanelSize.y},
             ImVec2 {0, 1},
             ImVec2 {1, 0});
+
+        m_camera.setAspect(viewportPanelSize.x / viewportPanelSize.y);
     }
     ImGui::End();
 
-    ImGui::Begin("Viewport2");
+    ImGui::Begin("Inspector");
     {
-        uint32_t textureId = m_framebuffer->colorAttachmentRendererID();
-        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-        ImGui::Image(
-            (void *)textureId,
-            ImVec2 {viewportPanelSize.x, viewportPanelSize.y},
-            ImVec2 {0, 1},
-            ImVec2 {1, 0});
+        ImGui::Text("Camera");
+        ImGui::DragFloat3("Position", &m_camera.getPosition().x, 0.1);
     }
     ImGui::End();
+}
+
+void EditorLayer::onEvent(Event &event)
+{
+    EventDispatcher dispatcher(event);
+    dispatcher.dispatch<MouseScrollEvent>(BIND_EVENT_FN(EditorLayer::onMouseScrollEvent));
+    dispatcher.dispatch<MouseMovedEvent>(BIND_EVENT_FN(EditorLayer::onMouseMovedEvent));
+    dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(EditorLayer::onWindowResizeEvent));
+}
+
+bool EditorLayer::onMouseScrollEvent(MouseScrollEvent &mouseScrollEvent)
+{
+    m_camera.processMouseScroll(mouseScrollEvent.getYOffset());
+    return true;
+}
+
+bool EditorLayer::onMouseMovedEvent(MouseMovedEvent &mouseMovedEvent)
+{
+    if(an::Input::isMouseButtonPressed(AN_MOUSE_BUTTON_RIGHT))
+    {
+        m_camera.processMouseMovement(
+            prevFrameMousePos.x - mouseMovedEvent.getX(),
+            mouseMovedEvent.getY() - prevFrameMousePos.y);
+    }
+
+    prevFrameMousePos = {mouseMovedEvent.getX(), mouseMovedEvent.getY()};
+
+    return true;
+}
+
+bool EditorLayer::onWindowResizeEvent(WindowResizeEvent &windowResizeEvent) 
+{
+    m_camera.setAspect(windowResizeEvent.getWidth() / windowResizeEvent.getHeight());
+
+    return true;
 }
