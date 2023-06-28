@@ -4,6 +4,9 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/Shader.h"
 
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/vector_float3.hpp>
+
 namespace an::gfx
 {
 
@@ -16,6 +19,8 @@ class Model
     void setShader(std::shared_ptr<Shader> shader) { m_shader = std::move(shader); }
 
     const std::vector<Mesh> &meshes() const { return m_meshes; };
+    const glm::mat4 &modelMatrix() const { return m_modelMatrix; }
+    const glm::vec3 &color() const { return m_color; }
 
   private:
     void load(std::string const &path);
@@ -24,6 +29,9 @@ class Model
     std::string m_directory;
     std::vector<Mesh> m_meshes;
     std::shared_ptr<Shader> m_shader;
+
+    glm::mat4 m_modelMatrix {glm::mat4(1.0f)};
+    glm::vec3 m_color {1.0f};
 };
 
 } // namespace an::gfx

@@ -8,7 +8,6 @@
 
 #include <glm/ext/matrix_float4x4.hpp>
 
-
 namespace an::gfx
 {
 
@@ -22,7 +21,7 @@ class Renderer
     static void enableDepthTest();
     static void disableDepthTest();
 
-    static void begin(const Camera &camera);
+    static void begin(const Camera &camera, const glm::vec3 &lightPos, const glm::vec3 &lightColor);
     static void submit(const std::unique_ptr<Model> &model);
 
     static void onWindowResize(unsigned int width, unsigned int height);
@@ -35,6 +34,10 @@ class Renderer
     {
         glm::mat4 viewMatrix;
         glm::mat4 projectionMatrix;
+        glm::vec3 cameraPosition;
+
+        glm::vec3 lightPos;
+        glm::vec3 lightColor;
     };
 
     static SceneData sSceneData;

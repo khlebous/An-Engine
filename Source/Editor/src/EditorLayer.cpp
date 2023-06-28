@@ -15,8 +15,8 @@ using namespace an::ed;
 //--------------------------------------------------------------------------------------------------
 EditorLayer::EditorLayer() : m_camera({0.5f, 0.0f, 5.0f})
 {
-    std::string vertexFilePath = an::config::resourcesPath + "shader.vs";
-    std::string fragmentFilePath = an::config::resourcesPath + "shader.fs";
+    std::string vertexFilePath = an::config::resourcesPath + "phong.vs";
+    std::string fragmentFilePath = an::config::resourcesPath + "phong.fs";
     m_shader = std::make_shared<gfx::Shader>(vertexFilePath, fragmentFilePath);
 
     gfx::Renderer::setClearColor(0.6f, 0.6f, 0.6f, 1.0f);
@@ -50,7 +50,7 @@ void EditorLayer::onUpdate()
 
     m_framebuffer->bind();
     gfx::Renderer::clear();
-    gfx::Renderer::begin(m_camera);
+    gfx::Renderer::begin(m_camera, m_lightPos, m_lightColor);
     gfx::Renderer::submit(m_model);
     m_framebuffer->unbind();
 }
@@ -77,7 +77,10 @@ void EditorLayer::onImgui()
     ImGui::Begin("Inspector");
     {
         ImGui::Text("Camera");
-        ImGui::DragFloat3("Position", &m_camera.getPosition().x, 0.1);
+        ImGui::DragFloat3("Position##CamPos", &m_camera.getPosition().x, 0.1);
+        ImGui::Text("Light");
+        ImGui::DragFloat3("Position##LightPos", &m_lightPos.x, 0.1);
+        ImGui::ColorEdit3("Color", &m_lightColor.x, 0.1);
     }
     ImGui::End();
 }

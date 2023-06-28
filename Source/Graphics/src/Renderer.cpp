@@ -34,12 +34,16 @@ void Renderer::disableDepthTest()
 }
 
 //--------------------------------------------------------------------------------------------------
-void Renderer::begin(const Camera &camera)
+void Renderer::begin(const Camera &camera, const glm::vec3 &lightPos, const glm::vec3 &lightColor)
 {
     sSceneData.projectionMatrix =
         glm::perspective(glm::radians(camera.getZoom()), camera.aspect(), camera.getNear(), camera.getFar());
 
     sSceneData.viewMatrix = camera.viewMatrix();
+    sSceneData.cameraPosition = camera.getPosition();
+
+    sSceneData.lightPos = lightPos;
+    sSceneData.lightColor = lightColor;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -47,8 +51,14 @@ void Renderer::submit(const std::unique_ptr<Model> &model)
 {
     const auto &shader = model->shader();
     shader->bind();
-    shader->uploadUniformMat4("u_view", sSceneData.viewMatrix);
-    shader->uploadUniformMat4("u_projection", sSceneData.projectionMatrix);
+    shader->setMat4("u_view", sSceneData.viewMatrix);
+    shader->setMat4("u_projection", sSceneData.projectionMatrix);
+    shader->setMat4("u_model", model->modelMatrix());
+
+    shader->setVec3("viewPos", sSceneData.cameraPosition);
+    shader->setVec3("lightPos", sSceneData.lightPos);
+    shader->setVec3("lightColor", sSceneData.lightColor);
+    shader->setVec3("objectColor", model->color());
 
     for(const auto &mesh : model->meshes())
         Renderer::submit(mesh);

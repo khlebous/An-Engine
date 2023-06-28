@@ -34,6 +34,8 @@ class EditorLayer : public Layer
     std::unique_ptr<gfx::Model> m_model;
     
     gfx::Camera m_camera;
+    glm::vec3 m_lightPos {10.0f, 0.0f, 2.5f};
+    glm::vec3 m_lightColor {1.0f, 1.0f, 1.0f};
 
     glm::vec2 prevFrameMousePos {-1, -1};
 };

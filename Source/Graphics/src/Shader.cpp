@@ -2,10 +2,10 @@
 
 #include <Core/Core.h>
 #include <Core/Logger.h>
-#include <glad/glad.h>
-#include <vector>
 #include <fstream>
+#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 using namespace an::gfx;
 
@@ -69,6 +69,7 @@ void Shader::unbind() const
     glUseProgram(0);
 }
 
+//--------------------------------------------------------------------------------------------------
 void Shader::init(const std::string &vertexSource, const std::string &fragmentSource)
 {
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -147,8 +148,74 @@ void Shader::init(const std::string &vertexSource, const std::string &fragmentSo
     glDetachShader(program, fragmentShader);
 }
 
-void Shader::uploadUniformMat4(const std::string &name, const glm::mat4 &matrix)
+//--------------------------------------------------------------------------------------------------
+void Shader::setBool(const std::string &name, bool value) const
 {
-    GLint location = glGetUniformLocation(m_rendererID, name.c_str());
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    glUniform1i(glGetUniformLocation(m_rendererID, name.c_str()), static_cast<int>(value));
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setInt(const std::string &name, int value) const
+{
+    glUniform1i(glGetUniformLocation(m_rendererID, name.c_str()), value);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setFloat(const std::string &name, float value) const
+{
+    glUniform1f(glGetUniformLocation(m_rendererID, name.c_str()), value);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setVec2(const std::string &name, float x, float y) const
+{
+    glUniform2f(glGetUniformLocation(m_rendererID, name.c_str()), x, y);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setVec2(const std::string &name, const glm::vec2 &value) const
+{
+    glUniform2fv(glGetUniformLocation(m_rendererID, name.c_str()), 1, &value[0]);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setVec3(const std::string &name, float x, float y, float z) const
+{
+    glUniform3f(glGetUniformLocation(m_rendererID, name.c_str()), x, y, z);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setVec3(const std::string &name, const glm::vec3 &value) const
+{
+    glUniform3fv(glGetUniformLocation(m_rendererID, name.c_str()), 1, &value[0]);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setVec4(const std::string &name, float x, float y, float z, float w) const
+{
+    glUniform4f(glGetUniformLocation(m_rendererID, name.c_str()), x, y, z, w);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setVec4(const std::string &name, const glm::vec4 &value) const
+{
+    glUniform4fv(glGetUniformLocation(m_rendererID, name.c_str()), 1, &value[0]);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setMat2(const std::string &name, const glm::mat2 &mat) const
+{
+    glUniformMatrix2fv(glGetUniformLocation(m_rendererID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setMat3(const std::string &name, const glm::mat3 &mat) const
+{
+    glUniformMatrix3fv(glGetUniformLocation(m_rendererID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
+//--------------------------------------------------------------------------------------------------
+void Shader::setMat4(const std::string &name, const glm::mat4 &mat) const
+{
+    glUniformMatrix4fv(glGetUniformLocation(m_rendererID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
