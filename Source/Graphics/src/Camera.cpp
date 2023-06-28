@@ -6,7 +6,7 @@ namespace
 
 constexpr float YAW = -90.0f;
 constexpr float PITCH = 0.0f;
-constexpr float SPEED = 2.5f;
+constexpr float SPEED = 0.03f;
 constexpr float SENSITIVITY = 0.1f;
 constexpr float ZOOM = 45.0f;
 constexpr float ASPECT = 16.0f / 9.0f;

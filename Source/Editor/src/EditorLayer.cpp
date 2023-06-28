@@ -29,6 +29,12 @@ EditorLayer::EditorLayer() : m_camera({0.5f, 0.0f, 5.0f})
 
     m_model = std::make_unique<gfx::Model>(an::config::resourcesPath + "suzanne.obj");
     m_model->setShader(m_shader);
+
+    m_light = std::make_shared<gfx::Light>();
+    m_light->position = glm::vec3 {10, 0, 3.5};
+    m_light->ambient = glm::vec3 {1.0f, 1.0f, 1.0f};
+    m_light->diffuse = glm::vec3 {1.0f, 1.0f, 1.0f};
+    m_light->specular = glm::vec3 {1.0f, 1.0f, 1.0f};
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -47,7 +53,7 @@ void EditorLayer::onUpdate(double deltaTime)
 
     m_framebuffer->bind();
     gfx::Renderer::clear();
-    gfx::Renderer::begin(m_camera, m_lightPos, m_lightColor);
+    gfx::Renderer::begin(m_camera, m_light);
     gfx::Renderer::submit(m_model);
     m_framebuffer->unbind();
 }
@@ -74,10 +80,19 @@ void EditorLayer::onImgui()
     ImGui::Begin("Inspector");
     {
         ImGui::Text("Camera");
-        ImGui::DragFloat3("Position##CamPos", &m_camera.getPosition().x, 0.1);
+        ImGui::DragFloat3("position##camera.position", &m_camera.getPosition().x, 0.1);
         ImGui::Text("Light");
-        ImGui::DragFloat3("Position##LightPos", &m_lightPos.x, 0.1);
-        ImGui::ColorEdit3("Color", &m_lightColor.x, 0.1);
+        ImGui::DragFloat3("position##light.position", &m_light->position.x, 0.1);
+        ImGui::ColorEdit3("ambient##light.ambient", &m_light->ambient.x, 0.1);
+        ImGui::ColorEdit3("diffuse##light.diffuse", &m_light->diffuse.x, 0.1);
+        ImGui::ColorEdit3("specular##light.specular", &m_light->specular.x, 0.1);
+        ImGui::Text("Model");
+        ImGui::Text("Material");
+        auto &material = m_model->material();
+        ImGui::ColorEdit3("ambient##model.material.ambient", &material.ambient.x, 0.1);
+        ImGui::ColorEdit3("diffuse##model.material.diffuse", &material.diffuse.x, 0.1);
+        ImGui::ColorEdit3("specular##model.material.specular", &material.specular.x, 0.1);
+        ImGui::DragFloat("shininess##model.material.shininess", &material.shininess, 0.1);
     }
     ImGui::End();
 }
@@ -110,7 +125,7 @@ bool EditorLayer::onMouseMovedEvent(MouseMovedEvent &mouseMovedEvent)
     return true;
 }
 
-bool EditorLayer::onWindowResizeEvent(WindowResizeEvent &windowResizeEvent) 
+bool EditorLayer::onWindowResizeEvent(WindowResizeEvent &windowResizeEvent)
 {
     m_camera.setAspect(windowResizeEvent.getWidth() / windowResizeEvent.getHeight());
 

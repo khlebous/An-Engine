@@ -3,6 +3,7 @@
 
 #include "Graphics/Mesh.h"
 #include "Graphics/Shader.h"
+#include "Graphics/Material.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/vector_float3.hpp>
@@ -22,6 +23,9 @@ class Model
     const glm::mat4 &modelMatrix() const { return m_modelMatrix; }
     const glm::vec3 &color() const { return m_color; }
 
+    const Material &material() const { return m_material; }
+    Material &material() { return m_material; }
+
   private:
     void load(std::string const &path);
 
@@ -30,6 +34,7 @@ class Model
     std::vector<Mesh> m_meshes;
     std::shared_ptr<Shader> m_shader;
 
+    Material m_material;
     glm::mat4 m_modelMatrix {glm::mat4(1.0f)};
     glm::vec3 m_color {1.0f};
 };

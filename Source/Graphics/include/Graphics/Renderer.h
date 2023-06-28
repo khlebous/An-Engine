@@ -1,6 +1,7 @@
 #ifndef AN_ENGINE_GRAPHICS_RENDERER
 #define AN_ENGINE_GRAPHICS_RENDERER
 
+#include "Graphics/Light.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Model.h"
 #include "Graphics/Shader.h"
@@ -21,7 +22,7 @@ class Renderer
     static void enableDepthTest();
     static void disableDepthTest();
 
-    static void begin(const Camera &camera, const glm::vec3 &lightPos, const glm::vec3 &lightColor);
+    static void begin(const Camera &camera, std::shared_ptr<Light> light);
     static void submit(const std::unique_ptr<Model> &model);
 
     static void onWindowResize(unsigned int width, unsigned int height);
@@ -36,8 +37,7 @@ class Renderer
         glm::mat4 projectionMatrix;
         glm::vec3 cameraPosition;
 
-        glm::vec3 lightPos;
-        glm::vec3 lightColor;
+        std::shared_ptr<Light> light;
     };
 
     static SceneData sSceneData;
