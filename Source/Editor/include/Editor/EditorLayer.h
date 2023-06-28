@@ -18,7 +18,7 @@ class EditorLayer : public Layer
   public:
     EditorLayer();
 
-    void onUpdate() final;
+    void onUpdate(double deltaTime) final;
     void onImgui() final;
 
     void onEvent(Event &event) override;

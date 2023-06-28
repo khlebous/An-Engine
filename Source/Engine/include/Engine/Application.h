@@ -38,6 +38,7 @@ class Application
     std::unique_ptr<Window> m_window;
     bool m_isMinimized = false;
     bool m_isRunning = true;
+    double lastFrameTime = 0.0f;
     ImguiLayer *m_imguiOverlay;
 
     static Application *m_instance;

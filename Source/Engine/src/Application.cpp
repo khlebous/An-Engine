@@ -34,15 +34,15 @@ Application::Application()
 //--------------------------------------------------------------------------------------------------
 void Application::run()
 {
-
-
     while(m_isRunning)
     {
-        
+        double time = glfwGetTime();
+        double deltaTime = time - lastFrameTime;
+
         if(!m_isMinimized)
         {
             for(auto &layer : m_layerStack)
-                layer->onUpdate();
+                layer->onUpdate(deltaTime);
 
             m_imguiOverlay->begin();
             for(auto &layer : m_layerStack)

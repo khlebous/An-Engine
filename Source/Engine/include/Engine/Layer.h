@@ -13,7 +13,7 @@ class Layer
   public:
     virtual ~Layer() {};
 
-    virtual void onUpdate() {}
+    virtual void onUpdate(double deltaTime) {}
     virtual void onEvent(Event &event) {}
     virtual void onImgui() {}
 

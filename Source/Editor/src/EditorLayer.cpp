@@ -32,19 +32,16 @@ EditorLayer::EditorLayer() : m_camera({0.5f, 0.0f, 5.0f})
 }
 
 //--------------------------------------------------------------------------------------------------
-void EditorLayer::onUpdate()
+void EditorLayer::onUpdate(double deltaTime)
 {
-    // @todo change to delta time
-    float cameraMoveSpeed = 0.05f;
-
     if(an::Input::isKeyPressed(AN_KEY_LEFT) || an::Input::isKeyPressed(AN_KEY_A))
-        m_camera.processKeyboard(an::gfx::Camera::Direction::LEFT, cameraMoveSpeed);
+        m_camera.processKeyboard(an::gfx::Camera::Direction::LEFT, deltaTime);
     else if(an::Input::isKeyPressed(AN_KEY_RIGHT) || an::Input::isKeyPressed(AN_KEY_D))
-        m_camera.processKeyboard(an::gfx::Camera::Direction::RIGHT, cameraMoveSpeed);
+        m_camera.processKeyboard(an::gfx::Camera::Direction::RIGHT, deltaTime);
     else if(an::Input::isKeyPressed(AN_KEY_DOWN) || an::Input::isKeyPressed(AN_KEY_S))
-        m_camera.processKeyboard(an::gfx::Camera::Direction::BACKWARD, cameraMoveSpeed);
+        m_camera.processKeyboard(an::gfx::Camera::Direction::BACKWARD, deltaTime);
     else if(an::Input::isKeyPressed(AN_KEY_UP) || an::Input::isKeyPressed(AN_KEY_W))
-        m_camera.processKeyboard(an::gfx::Camera::Direction::FORWARD, cameraMoveSpeed);
+        m_camera.processKeyboard(an::gfx::Camera::Direction::FORWARD, deltaTime);
 
     gfx::Renderer::clear();
 
