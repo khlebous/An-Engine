@@ -8,6 +8,7 @@
 #include <Graphics/Light.h>
 #include <Graphics/Model.h>
 #include <Graphics/Shader.h>
+#include <Graphics/Texture.h>
 #include <Graphics/VertexArray.h>
 #include <memory>
 
@@ -34,6 +35,7 @@ class EditorLayer : public Layer
     std::shared_ptr<gfx::Light> m_light;
     std::unique_ptr<gfx::Framebuffer> m_framebuffer;
     std::unique_ptr<gfx::Model> m_model;
+    std::unique_ptr<gfx::Texture> m_checkboxTexture;
 
     gfx::Camera m_camera;
 

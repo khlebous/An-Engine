@@ -6,6 +6,7 @@
 #include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/VertexArray.h"
+#include "Graphics/Texture.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
 
@@ -26,6 +27,8 @@ class Renderer
     static void submit(const std::unique_ptr<Model> &model);
 
     static void onWindowResize(unsigned int width, unsigned int height);
+
+    static void drawQuad(const glm::vec2 &, const glm::vec2 &, const gfx::Texture &checkboxTexture, gfx::Shader &shader);
 
   private:
     static void submit(const Mesh &mesh);

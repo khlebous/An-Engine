@@ -35,6 +35,9 @@ EditorLayer::EditorLayer() : m_camera({0.5f, 0.0f, 5.0f})
     m_light->ambient = glm::vec3 {1.0f, 1.0f, 1.0f};
     m_light->diffuse = glm::vec3 {1.0f, 1.0f, 1.0f};
     m_light->specular = glm::vec3 {1.0f, 1.0f, 1.0f};
+
+    m_checkboxTexture =
+        std::make_unique<gfx::Texture>(an::config::resourcesPath + "awesomeface.png");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -55,6 +58,7 @@ void EditorLayer::onUpdate(double deltaTime)
     gfx::Renderer::clear();
     gfx::Renderer::begin(m_camera, m_light);
     gfx::Renderer::submit(m_model);
+    gfx::Renderer::drawQuad({0.0f, 0.0f}, {2.0f, 2.0f}, *m_checkboxTexture.get(), *m_shader);
     m_framebuffer->unbind();
 }
 

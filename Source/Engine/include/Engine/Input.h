@@ -1,5 +1,5 @@
-#ifndef ENGINE_INPUT
-#define ENGINE_INPUT
+#ifndef AN_ENGINE_INPUT
+#define AN_ENGINE_INPUT
 
 #include <utility>
 
@@ -19,4 +19,4 @@ class Input
 
 } // namespace an
 
-#endif // ENGINE_INPUT
+#endif // AN_ENGINE_INPUT

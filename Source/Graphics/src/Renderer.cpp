@@ -4,6 +4,7 @@
 #include "Graphics/Model.h"
 
 #include <glad/glad.h>
+#include "../../../external/glm/glm/ext/matrix_transform.hpp"
 
 using namespace an::gfx;
 
@@ -83,4 +84,21 @@ void Renderer::submit(const Mesh &mesh)
 void Renderer::onWindowResize(unsigned int width, unsigned int height)
 {
     glViewport(0, 0, width, height);
+}
+
+void Renderer::drawQuad(
+    const glm::vec2 &_position,
+    const glm::vec2 &_size,
+    const gfx::Texture &checkboxTexture,
+    gfx::Shader &shader)
+{
+   // sData->TextureShader->UploadUniformFloat4("u_Color", _color);
+    checkboxTexture.Bind();
+
+  //  glm::mat4 transform = glm::translate(glm::mat4(1.0f), _position) *
+   //                       glm::scale(glm::mat4(1.0f), glm::vec3(_size, 1.0f));
+   // shader.setMat4("u_Model", transform);
+
+   // sData->QuadVertexArray->Bind();
+   // Renderer::DrawIndexed(sData->QuadVertexArray);
 }
